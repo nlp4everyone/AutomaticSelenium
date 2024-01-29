@@ -5,23 +5,16 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-import time,os,pwd
-import platform
-from enum import Enum
+# import Action chains
+from selenium.webdriver.common.action_chains import ActionChains
+import time,os,pwd,platform
+from utilities.supported_enum import SimpleAction,ProfileType,BrowserType,AdvancedAction
 
-# Browser
-class Browser(Enum):
-    CHROME = 0
-    FIREFOX = 1
-
-class ProfileType(Enum):
-    FIRST = 0
-    ALL = 1
 
 class AutomaticDriver():
-    def __init__(self,browser_type=Browser.CHROME,no_head = True,profile_type=ProfileType.FIRST):
+    def __init__(self,browser_type=BrowserType.CHROME,no_head = True,profile_type=ProfileType.FIRST):
         # Define chrome browser
-        if browser_type == Browser.CHROME:
+        if browser_type == BrowserType.CHROME:
             print("Working in Chrome mode!")
             # Get profile
             profile_url,profile_list = self._get_profile(profile_type)
@@ -30,11 +23,17 @@ class AutomaticDriver():
             # Set driver
             self.driver = self._chrome_driver(options=options)
         # Define firefox browser
-        elif browser_type == Browser.FIREFOX:
+        elif browser_type == BrowserType.FIREFOX:
             print("Working in Firefox mode")
             self.driver = self._firefox_driver()
         else:
             self.driver = None
+
+        # Add chain
+        if self.driver == None:
+            raise Exception("Driver hasn't been initialized")
+        # create action chain object
+        self.action = ActionChains(self.driver)
 
     def _chrome_driver(self,options):
         # Init driver
@@ -116,7 +115,8 @@ class AutomaticDriver():
         # Get title
         return self.driver.title
 
-    def find_element_and_attribute(self,access_target,value:str):
+    def find_element_and_attribute(self,access_target:By,value:str,delay=0.3)->By:
+        time.sleep(delay)
         # Find object
         element = self.driver.find_element(access_target,value)
         # Role of the element
@@ -124,8 +124,7 @@ class AutomaticDriver():
         # Element property
         element_text = element.text
         element_location = element.location
-        element_pic = element.screenshot_as_png # element.screenshot
-        print(element)
+        # element_pic = element.screenshot_as_png # element.screenshot
         print(f"Element text: {element_text}. Role: {role}. Location: {element_location}")
 
         return element
@@ -138,6 +137,24 @@ class AutomaticDriver():
 
     def send_key(self,key,element,overide=True):
         element.send_keys(key)
+
+    def simple_action(self,element,action_type=SimpleAction):
+        # Select action
+        if action_type == SimpleAction.CLICK:
+            self.action.click(element)
+
+        # Make the action
+        self.action.perform()
+
+    def advance_action(self, element, action_type=AdvancedAction):
+        # Select action
+        if action_type == AdvancedAction.CLICK_AND_HOLD:
+            self.action.click_and_hold(element)
+
+        # Make the action
+        self.action.perform()
+
+
 
 # Show instruction
 # notePath = "notes.txt"
