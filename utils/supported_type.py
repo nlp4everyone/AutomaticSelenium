@@ -5,10 +5,6 @@ class BrowserType(Enum):
     CHROME = 0
     FIREFOX = 1
 
-class ProfileType(Enum):
-    FIRST = 0
-    ALL = 1
-
 class SimpleAction(Enum):
     CLICK = 0
     DOUBLE_CLICK = 1
