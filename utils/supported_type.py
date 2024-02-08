@@ -6,9 +6,16 @@ class BrowserType(Enum):
     FIREFOX = 1
 
 class SimpleAction(Enum):
-    CLICK = 0
-    DOUBLE_CLICK = 1
+    LEFT_CLICK = 0
+    RIGHT_CLICK = 1
+    DOUBLE_CLICK = 2
+    CLICK_AND_HOLD = 3
+    RELEASE = 4
 
-class AdvancedAction(Enum):
-    CLICK_AND_HOLD = 0
-    DOUBLE_CLICK = 1
+class DriverAction(Enum):
+    FORWARD = 0
+    BACK = 1
+    REFRESH = 2
+    FULL_SCREEN = 3
+    MINIMIZE_WINDOW = 4
+
